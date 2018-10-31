@@ -6,7 +6,7 @@ agent:
     os_image: ubuntu1804
 
 promotions:
-- name: Publish image
+- name: Publish Docker image
   pipeline_file: p2.yml
   auto_promote_on:
     - result: passed
