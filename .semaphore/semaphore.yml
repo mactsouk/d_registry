@@ -28,6 +28,9 @@ blocks:
             - ls -l v1
             - cache store $SEMAPHORE_PIPELINE_ARTEFACT_ID v1
 
+      secrets:
+      - name: docker-hub
+
   - name: Test Docker image
     task:
       jobs:
@@ -40,3 +43,6 @@ blocks:
             - docker load -i v1/go_hw.tar
             - docker images
             - docker run go_hw:v1
+
+      secrets:
+      - name: docker-hub
