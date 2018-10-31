@@ -21,12 +21,15 @@ blocks:
           commands:
             - checkout
             - echo $SEMAPHORE_PIPELINE_ARTEFACT_ID
+			- echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
             - cp v2.go hw.go
             - docker build -t go_hw:v2 .
-            - mkdir v2
-            - docker save go_hw:v2 -o v2/go_hw.tar
-            - ls -l v2
-            - cache store $SEMAPHORE_PIPELINE_ARTEFACT_ID v2
+			- docker tag go_hw:v1 "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
+            - docker push "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
+            - docker images
+
+      secrets:
+      - name: docker-hub
 
   - name: Test Docker image
     task:
@@ -34,8 +37,10 @@ blocks:
         - name: Restore Docker image from cache
           commands:
             - echo $SEMAPHORE_PIPELINE_ARTEFACT_ID
-            - cache restore $SEMAPHORE_PIPELINE_ARTEFACT_ID
-            - ls -l v2
-            - docker load -i v2/go_hw.tar
+			- echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - docker pull "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
             - docker images
-            - docker run go_hw:v2
+            - docker run "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
+
+      secrets:
+      - name: docker-hub
