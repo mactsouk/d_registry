@@ -14,10 +14,10 @@ blocks:
             - echo $SEMAPHORE_PIPELINE_0_ARTEFACT_ID
             - echo $SEMAPHORE_PIPELINE_1_ARTEFACT_ID
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            - docker pull "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
+            - docker pull "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_1_ARTEFACT_ID"
             - docker pull "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_0_ARTEFACT_ID"
             - docker images
-            - docker run "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
+            - docker run "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_1_ARTEFACT_ID"
             - docker run "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_0_ARTEFACT_ID"
 
       secrets:
