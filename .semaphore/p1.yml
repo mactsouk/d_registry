@@ -1,0 +1,41 @@
+version: v1.0
+name: 1st promotion
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+
+promotions:
+- name: Publish image
+  pipeline_file: p2.yml
+  auto_promote_on:
+    - result: passed
+      branch:
+        - "master"
+
+blocks:
+  - name: Create and Store Docker image
+    task:
+      jobs:
+        - name: Store Docker image in cache
+          commands:
+            - checkout
+            - echo $SEMAPHORE_PIPELINE_ARTEFACT_ID
+            - cp v2.go hw.go
+            - docker build -t go_hw:v2 .
+            - mkdir v2
+            - docker save go_hw:v2 -o v2/go_hw.tar
+            - ls -l v2
+            - cache store $SEMAPHORE_PIPELINE_ARTEFACT_ID v2
+
+  - name: Test Docker image
+    task:
+      jobs:
+        - name: Restore Docker image from cache
+          commands:
+            - echo $SEMAPHORE_PIPELINE_ARTEFACT_ID
+            - cache restore $SEMAPHORE_PIPELINE_ARTEFACT_ID
+            - ls -l v2
+            - docker load -i v2/go_hw.tar
+            - docker images
+            - docker run go_hw:v2
