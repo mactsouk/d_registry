@@ -2,14 +2,14 @@ version: v1.0
 name: 2nd promotion
 agent:
   machine:
-    type: e1-standard-2
+    type: e1-standard-4
     os_image: ubuntu1804
 
 blocks:
   - name: Test Docker images
     task:
       jobs:
-        - name: Restore Docker image from Registry
+        - name: Restore Two Docker images from Registry
           commands:
             - echo $SEMAPHORE_PIPELINE_0_ARTEFACT_ID
             - echo $SEMAPHORE_PIPELINE_1_ARTEFACT_ID
