@@ -17,30 +17,29 @@ blocks:
   - name: Create and Store Docker image
     task:
       jobs:
-        - name: Store Docker image in cache
+        - name: Store Docker image in Registry
           commands:
             - checkout
             - echo $SEMAPHORE_PIPELINE_ARTEFACT_ID
             - cp v1.go hw.go
             - docker build -t go_hw:v1 .
-            - mkdir v1
-            - docker save go_hw:v1 -o v1/go_hw.tar
-            - ls -l v1
-            - cache store $SEMAPHORE_PIPELINE_ARTEFACT_ID v1
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - docker tag nginx_static:v1 "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
+            - docker push "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
+            - docker images
 
       secrets:
       - name: docker-hub
 
-  - name: Test Docker image
+  - name: Pull Docker image
     task:
       jobs:
-        - name: Restore Docker image from cache
+        - name: Restore Docker image from Registry
           commands:
             - echo $SEMAPHORE_PIPELINE_ARTEFACT_ID
             - echo $SEMAPHORE_PIPELINE_0_ARTEFACT_ID
-            - cache restore $SEMAPHORE_PIPELINE_0_ARTEFACT_ID
-            - ls -l v1
-            - docker load -i v1/go_hw.tar
+            - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
+            - docker pull "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
             - docker images
             - docker run go_hw:v1
 
