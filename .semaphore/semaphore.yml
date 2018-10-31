@@ -24,7 +24,7 @@ blocks:
             - cp v1.go hw.go
             - docker build -t go_hw:v1 .
             - echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin
-            - docker tag nginx_static:v1 "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
+            - docker tag go_hw:v1 "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
             - docker push "$DOCKER_USERNAME"/"$SEMAPHORE_PIPELINE_ARTEFACT_ID"
             - docker images
 
