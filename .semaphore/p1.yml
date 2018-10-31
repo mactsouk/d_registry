@@ -17,7 +17,7 @@ blocks:
   - name: Create and Store Docker image
     task:
       jobs:
-        - name: Store Docker image in cache
+        - name: Store Docker image in Registry
           commands:
             - checkout
             - echo $SEMAPHORE_PIPELINE_ARTEFACT_ID
@@ -34,7 +34,7 @@ blocks:
   - name: Test Docker image
     task:
       jobs:
-        - name: Restore Docker image from cache
+        - name: Restore Docker image from Registry
           commands:
             - echo $SEMAPHORE_PIPELINE_ARTEFACT_ID
 			- echo $DOCKER_PASSWORD | docker login --username "$DOCKER_USERNAME" --password-stdin

@@ -9,7 +9,7 @@ blocks:
   - name: Test Docker images
     task:
       jobs:
-        - name: Restore Docker image from cache
+        - name: Restore Docker image from Registry
           commands:
             - echo $SEMAPHORE_PIPELINE_0_ARTEFACT_ID
             - echo $SEMAPHORE_PIPELINE_1_ARTEFACT_ID
